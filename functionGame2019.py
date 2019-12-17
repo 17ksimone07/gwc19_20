@@ -13,6 +13,7 @@ BLACK = (0, 0, 0)
 WHITE = (255,255,255)
 grid = [] # 2D array (list of lists) for board
 player = pygame.image.load('player.jpg').convert()
+player2 = pygame.image.load('player.jpg').convert()
 playerCoord = [0,0]
 icon0 = pygame.image.load('icon0.jpg').convert() 
 icon1 = pygame.image.load('icon1.jpg').convert()
@@ -27,11 +28,12 @@ def initBoard():
     for column in range(5):
         grid[row].append(0) # all values set to 0
   # Set hard-coded start locations for player and icons:        
-  grid[0][0] = 1  # player icon; value of 1 is player location
+  grid[4][4] = 1  # player icon; value of 1 is player location
+  grid[0][0] = 2
   grid[0][2] = 10 # icon 0 location set by a value of 10
-  grid[3][1] = 11 # icon 1 location set by a value of 11
-  grid[2][2] = 12 # icon 2 location set by a value of 12
-  grid[4][3] = 13 # icon 3 location set by a value of 13
+  grid[4][1] = 11 # icon 1 location set by a value of 11
+  grid[2][3] = 12 # icon 2 location set by a value of 12
+  grid[2][0] = 13 # icon 3 location set by a value of 13
 
 ## 3b - Draw player/icon on the board
 def drawIcon(rw,cl,iconName):
@@ -41,7 +43,7 @@ def drawIcon(rw,cl,iconName):
 def updateBoard():
   for row in range(5):
     for column in range(5):
-      color = WHITE             
+      color = BLACK
       pygame.draw.rect(screen,color,[(margin + width) * column + margin,
                                      (margin + height) * row + margin,
                                       width, height])
@@ -54,7 +56,9 @@ def updateBoard():
       if grid[row][column] == 13:  #icon3 location
         drawIcon(row,column,icon3)    
       if grid[row][column] == 1:  #player location
-        drawIcon(row,column,player)  
+        drawIcon(row,column,player)
+      if grid[row][column] == 2:  #player location
+        drawIcon(row,column,player2)  
 
 ## 3d - Adjust score and print out a message if increased
 def adjustScore(scoreP):
@@ -74,30 +78,55 @@ def movePlayer(scoreParam, stepcount):
       # only handle key releases for simplicity (KEYUP not KEYDOWN)
       elif event.type == pygame.KEYUP:
         stepcount += 1
-        if event.key == pygame.K_LEFT or event.key == ord('a'):
+        if event.key == ord('a'):
           if playerCoord[1] > 0:
             grid[playerCoord[0]][playerCoord[1]] = 0
             playerCoord[1] -= 1
             scoreParam = adjustScore(scoreParam)
             grid[playerCoord[0]][playerCoord[1]] = 1          
-        elif event.key == pygame.K_RIGHT or event.key == ord('d'):
+        elif event.key == ord('d'):
           if playerCoord[1] < 4:
             grid[playerCoord[0]][playerCoord[1]] = 0
             playerCoord[1] += 1
             scoreParam = adjustScore(scoreParam)
             grid[playerCoord[0]][playerCoord[1]] = 1
-        elif event.key == pygame.K_UP or event.key == ord('w'):
+        elif event.key == ord('w'):
           if playerCoord[0] > 0:
             grid[playerCoord[0]][playerCoord[1]] = 0
             playerCoord[0] -= 1
             scoreParam = adjustScore(scoreParam)
             grid[playerCoord[0]][playerCoord[1]] = 1          
-        elif event.key == pygame.K_DOWN or event.key == ord('s'):
+        elif event.key == ord('s'):
           if playerCoord[0] < 4:
             grid[playerCoord[0]][playerCoord[1]] = 0
             playerCoord[0] += 1
             scoreParam = adjustScore(scoreParam)    
             grid[playerCoord[0]][playerCoord[1]] = 1
+            ###
+        elif event.key == pygame.K_LEFT:
+          if playerCoord[1] > 0:
+            grid[playerCoord[0]][playerCoord[1]] = 0
+            playerCoord[1] -= 1
+            scoreParam = adjustScore(scoreParam)
+            grid[playerCoord[0]][playerCoord[1]] = 2          
+        elif event.key == pygame.K_RIGHT:
+          if playerCoord[1] < 4:
+            grid[playerCoord[0]][playerCoord[1]] = 0
+            playerCoord[1] += 1
+            scoreParam = adjustScore(scoreParam)
+            grid[playerCoord[0]][playerCoord[1]] = 2
+        elif event.key == pygame.K_UP:
+          if playerCoord[0] > 0:
+            grid[playerCoord[0]][playerCoord[1]] = 0
+            playerCoord[0] -= 1
+            scoreParam = adjustScore(scoreParam)
+            grid[playerCoord[0]][playerCoord[1]] = 2          
+        elif event.key == pygame.K_DOWN:
+          if playerCoord[0] < 4:
+            grid[playerCoord[0]][playerCoord[1]] = 0
+            playerCoord[0] += 1
+            scoreParam = adjustScore(scoreParam)    
+            grid[playerCoord[0]][playerCoord[1]] = 2
         elif event.key == ord('q'):
           print('quit game'); pygame.quit()
           break          
@@ -120,8 +149,8 @@ def gameFunct():
     clock.tick(60) # In milliseconds (https://www.pygame.org/docs/ref/time.html)
     pygame.display.flip() # Redraw the board
     if score == 4: # Check for exit condition congratulatory message
-      print("Congratulations on learning all of the Core 4!")
-      print("The goal is 9 steps, you took " + str(steps))
+      print("Congratulations you have completed Core 4!")
+      print("The goal is 10 steps or less, you took " + str(steps))
       print("Now practice practice practice and create cool code!")
   pygame.quit() # Quit the game
 
